@@ -1,0 +1,200 @@
+\documentclass[a4paper,10pt,notitlepage]{article}
+\usepackage[a4paper,left=1.6cm,right=1.6cm,top=1.2cm,bottom=1.2cm]{geometry}
+%\usepackage[cm,empty]{fullpage}
+\usepackage{fontawesome5}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{pdfpages}
+\usepackage{adjustbox}
+\usepackage{enumitem}
+\usepackage{pdfsync}
+\usepackage[scaled=.94]{helvet}
+\usepackage{ragged2e}
+\usepackage{ifthen}
+\usepackage{xcolor}
+
+% Uncomment this to show the margins as a frame
+%\usepackage{showframe}
+
+% Make text dark gray instead of black
+\AtBeginDocument{\color{darkgray}}
+
+% Background color for contact information box
+\definecolor{infoboxcolor}{gray}{.97}
+
+\usepackage[]{hyperref}
+\hypersetup{
+    pdftitle={Sarah Billah},
+	pdfauthor={Sarah Billah},
+	pdfsubject={Resume for Sarah Billah},
+	pdfkeywords={resume, curriculum vitae, MIS, analytics, student, pharmacy technician},
+	%pdfpagemode=UseOutlines,
+    pdfpagemode=UseThumbs,
+	breaklinks=true,
+	%linktocpage=true,
+	colorlinks=true,
+	urlcolor=darkgray,
+	linkcolor=darkgray,
+	citecolor=darkgray
+}
+
+% Set spacing and stuff
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
+\linespread{1.1}
+\renewcommand{\baselinestretch}{.82}
+\setlist[itemize]{leftmargin=*,rightmargin=0pt,itemsep=1pt,topsep=1pt}
+
+% Reduce ugly word hyphenation
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+% Override fonts
+\renewcommand{\familydefault}{\sfdefault}
+%\renewcommand{\bfdefault}{sb}
+\titleformat{\section}[hang]{\normalsize}{}{0pt}{\textsc}[\titlerule]
+\titlespacing{\section}{0pt}{0pt}{1em}
+\titleformat{\subsection}[hang]{\normalsize}{}{0pt}{\textsc}[\titlerule]
+\titlespacing{\subsection}{0pt}{0pt}{1em}
+
+
+% Set height of title and info box minipage and column widths
+\newcommand{\titleheight}{2.4cm} % 1.8cm or more is ideal
+\newcommand{\colheight}{\textheight-\titleheight-1cm} % height is needed for vfill to work
+\newcommand{\lcolwidth}{.60\textwidth}
+\newcommand{\rcolwidth}{.35\textwidth}
+
+
+% TODO: remove ifthenelse and figure out how to use \unskip or \vspace-\lastskip instead
+
+
+% Education
+% Arguments: Degree, from, to, institution, additional explanation
+\newcommand{\education}[6][]{%
+	\parbox{\linewidth}{%
+        %\parbox[t]{1.5em}{\small{\faGraduationCap}}%
+        \parbox[b]{\linewidth}{%
+            {\ignorespaces \textbf{#2}}
+			\hfill
+			{\ignorespaces {#3}} --- {\ignorespaces {#4}}
+		}
+        \smallskip
+		\parbox{\linewidth}{{\ignorespaces {#5}}}
+		\parbox{\linewidth}{{\ignorespaces {#6}}}
+	}\ifthenelse{\equal{#1}{}}{\bigskip\medskip}{}
+}
+
+% Position
+% Arguments: Job title, from, to
+\newcommand{\position}[3]{%
+    \parbox[b]{\textwidth}{%
+		{\ignorespaces \textbf{#1}}
+		\hfill
+		{\ignorespaces {#2}} --- {\ignorespaces {#3}}
+    }\smallskip%
+}
+
+% Experience environment
+% Arguments: Company, position(s)
+\newenvironment{experience}[3][]{%
+	\ifthenelse{\equal{#1}{}}{\def\last{false}}{\def\last{true}}
+    \begin{minipage}{\linewidth}{\noindent\ignorespaces #3}\end{minipage}
+    \medskip
+	\parbox{\linewidth}{\noindent\ignorespaces {#2}}
+    \begin{itemize}
+	\ignorespaces
+}{%
+	\ignorespacesafterend
+    \end{itemize}
+	\ifthenelse{\equal{\last}{true}}{}{\medskip}%
+	%\ifthenelse{\equal{\last}{true}}{}{\vfill}%
+}
+
+% Short-hand command for experience (without contributions/accomplishments)
+% Arguments: Company, position(s)
+\newcommand{\shortexperience}[3][]{%
+	\parbox{\linewidth}{\ignorespaces #3}
+	\parbox{\linewidth}{\noindent\ignorespaces {#2}}%
+	\ifthenelse{\equal{#1}{}}{\bigskip\smallskip}{}%
+}
+
+% Publication
+% Arguments: DOI, Date, Venue, Volume/Issue, Authors, Title
+% TODO: DeclareCommand and use key-value (type=xxx)
+\newcommand{\publication}[7][proceedings]{%
+    \def\symw{1em}
+    %\parbox[m]{\symw}{\faBook}%
+    \parbox[m]{\symw}{\labelitemi}%
+    \href{https://doi.org/#2}{%
+        \parbox[t]{\linewidth-\symw}{%
+            \noindent\ignorespaces{#6}.
+            {\justifying\noindent\ignorespaces{``{#7}}''}.
+            \textit{\noindent\ignorespaces{#4}}%
+            \noindent\ignorespaces{\ifthenelse{\equal{#5}{}}{}{%
+                \ifthenelse{\equal{#1}{proceedings}}{ (\noindent\ignorespaces{#5})}{, \noindent\ignorespaces{#5}}%
+            }.}\ifthenelse{\equal{#3}{}}{}{ \noindent\ignorespaces{#3}.}
+            DOI:~{#2}%\href{https://doi.org/#2}{#2}}
+        }%
+    }
+    \medskip
+}
+
+% Generic entry without a time period (skills, projects, etc)
+% Arguments: icon, title, description
+\newcommand{\entry}[4][]{%
+    \parbox[m]{\linewidth}{%
+        \ifthenelse{\equal{#2}{}}{\def\symw{0em}}{\def\symw{1.5em}}
+        \ifthenelse{\equal{#2}{}}{}{\parbox[t]{\symw}{\small{#2}}}%
+        \parbox[m]{\linewidth-\symw}{\textbf{\noindent\ignorespaces{#3}}}
+        \smallskip
+        \parbox[t]{\linewidth}{%
+            \noindent\ignorespaces
+            \justifying{#4}
+        }
+	}\ifthenelse{\equal{#1}{}}{\medskip}{}%
+}
+
+
+
+\begin{document}
+\pagestyle{empty}
+\addcontentsline{toc}{title}{Sarah Billah}%
+\begin{minipage}[m][\titleheight][c]{\lcolwidth}
+    {\Huge\textbf{Sarah Billah}}\\[1.1em] % huge (with lowercase h) works best if the personal info box would be smaller
+    {\LARGE{Data Analytics / MIS Intern}} % Large (uppercase L, lowercase large) is also better when the box is smaller
+\end{minipage}%
+\hfill%
+\protect\begin{minipage}[m][\titleheight][c]{\rcolwidth}
+    \addcontentsline{toc}{section}{Personal Information}%
+	\begin{adjustbox}{max width=\textwidth}
+	\fcolorbox{black}{infoboxcolor}{
+		\begin{tabular*}{\linewidth}{c|l}
+            \large{\faPhone*} & 
+            {\href{tel:+4056697473}{{+1}~(405)~669~7473}}\\
+            \large{\faEnvelope[regular]} &
+			{\href{mailto:sarahmbrans@gmail.com}{{sarahmbrans}@gmail.com}} \\
+			\large{\faLinkedin} &
+			{\href{https://www.linkedin.com/in/sarahbrans}{{sarahbrans}}} \\
+			\large{\faGithub} &
+			{\href{https://github.com/sarahbrans}{{sarahbrans}}} \\
+		\end{tabular*}
+	}
+	\end{adjustbox}
+\end{minipage}
+
+\begin{minipage}[t][\colheight][t]{\lcolwidth}
+    \input{projects}\unskip
+    \vspace{0.8em}
+    \input{exp}\unskip
+    \vspace{0.8em}
+    \input{skills}\unskip
+\end{minipage}%
+\hfill%
+\begin{minipage}[t][\colheight][t]{\rcolwidth}
+    \input{edu}\unskip
+\end{minipage}
+
+\end{document}
